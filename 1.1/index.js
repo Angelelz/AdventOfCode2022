@@ -44,6 +44,6 @@ nInNumber.forEach((item, index) => {
   }
 })
 
-console.log(`Answer 1.1 is ${obj.total}`)
+// console.log(`Answer 1.1 is ${obj.total}`)
 
-module.exports = obj;
+module.exports = `Answer 1.2 is ${obj.total}`;

@@ -50,7 +50,7 @@ const grandTotal = totals[0] + totals[1] + totals[2]
 //   }
 // })
 
-console.log(`Answer 1.2 is ${grandTotal}`)
+// console.log(`Answer 1.2 is ${grandTotal}`)
 // console.log(totals)
 
-module.exports = obj;
+module.exports = `Answer 1.2 is ${grandTotal}`;
