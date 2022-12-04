@@ -26,7 +26,7 @@ newArr.forEach(obj => {
   score += shape[obj.me] + 1 + outcome
 })
 
-module.exports.one = `The answer 2.1 is ${score}`
+module.exports.one = `Answer 2.1 is ${score}`
 
 let newScore = 0;
 const newShape = {
@@ -47,4 +47,4 @@ newArr.forEach(obj => {
   newScore += newShape[obj.me] + me
 })
 
-module.exports.two = `The answer 2.2 is ${newScore}`
+module.exports.two = `Answer 2.2 is ${newScore}`

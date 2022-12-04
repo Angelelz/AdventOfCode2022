@@ -10,6 +10,10 @@ const arr = input.split("\n").reduce((acc, curr) => {
   return acc
 }, []).sort((a, b) => b-a)
 
-const grandTotal = arr[0] + arr[1] + arr[2]
+const answer1 = arr[0]
 
-module.exports = `Answer 1.2 is ${grandTotal}`;
+module.exports.one = `Answer 1.1 is ${arr[0]}`;
+
+const answer2 = arr[0] + arr[1] + arr[2]
+
+module.exports.two = `Answer 1.2 is ${answer2}`;
