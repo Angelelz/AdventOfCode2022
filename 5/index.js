@@ -1,7 +1,11 @@
 const input = require('./input').split("\n")
+if (input[input.length - 1] === "") input.pop()
+const division = input.findIndex((line, index) => line === "" && index > 1)
 
-const stack = input.slice(1, 9)
-const instructions = input.slice(11)
+const stack = input.slice(input[0] === "" ? 1 : 0, division - 1)
+const instructions = input.slice(division + 1)
+
+// console.log({stack, instructions})
 
 const parseStack = (stack, size) => {
   const stackArray = []
@@ -25,30 +29,37 @@ const parseInstructions = (instructions) => {
   })
 }
 
-const performSteps = (parsedInstructions, parsedStack) => {
+const performInstructions = (parsedInstructions, inStack) => {
+  const newStack = inStack.map(a => ([...a]))
   parsedInstructions.forEach(instruction => {
     for(let i = 0; i < instruction[0]; i++) {
-      console.log(instruction)
-      console.log(parsedStack[instruction[2]], parsedStack[instruction[1]])
-      parsedStack[instruction[2]].push(parsedStack[instruction[1]].pop())
+      newStack[instruction[2] - 1].push(newStack[instruction[1] - 1].pop())
     }
   })
+  return newStack
 }
 
 const parsedInstructions = parseInstructions(instructions)
 
 const parsedStack = parseStack(stack, 4)
 
-performSteps(parsedInstructions, parsedStack)
+const stackCompleted = performInstructions(parsedInstructions, parsedStack)
 
-
-console.log(parseStack(stack, 4), parsedStack)
-
-const answer1 = 1
+const answer1 = stackCompleted.reduce((acc, curr) => acc + curr[curr.length - 1], "")
 
 module.exports.one = `Answer 5.1 is ${answer1}`
 
+const performNewInstructions = (parsedInstructions, inStack) => {
+  const newStack = inStack.map(a => ([...a]))
+  parsedInstructions.forEach(instruction => {
+    const deleted = newStack[instruction[1] -1].splice(newStack[instruction[1] -1].length - instruction[0])
+    newStack[instruction[2] -1] = [...newStack[instruction[2] -1], ...deleted]
+  })
+  return newStack
+}
 
-const answer2 = 2
+const newStackCompleted = performNewInstructions(parsedInstructions, parsedStack)
+
+const answer2 = newStackCompleted.reduce((acc, curr) => acc + curr[curr.length - 1], "")
 
 module.exports.two = `Answer 5.2 is ${answer2}`

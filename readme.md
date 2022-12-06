@@ -13,3 +13,7 @@ Answer 3.2 is 2499
 Answer 4.1 is 441
 
 Answer 4.2 is 861
+
+Answer 5.1 is QMBMJDFTD
+
+Answer 5.2 is NBTVTJNFJ
