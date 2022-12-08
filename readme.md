@@ -21,3 +21,7 @@ Answer 5.2 is NBTVTJNFJ
 Answer 6.1 is 1655
 
 Answer 6.2 is 2665
+
+Answer 7.1 is 1644735
+
+Answer 7.2 is 1300850
