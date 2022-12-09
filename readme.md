@@ -25,3 +25,7 @@ Answer 6.2 is 2665
 Answer 7.1 is 1644735
 
 Answer 7.2 is 1300850
+
+Answer 8.1 is 1679
+
+Answer 8.2 is 536625
