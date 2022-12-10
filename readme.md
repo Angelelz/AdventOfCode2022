@@ -29,3 +29,7 @@ Answer 7.2 is 1300850
 Answer 8.1 is 1679
 
 Answer 8.2 is 536625
+
+Answer 9.1 is 6243
+
+Answer 9.2 is 2630
