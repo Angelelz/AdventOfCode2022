@@ -37,3 +37,7 @@ Answer 9.2 is 2630
 Answer 10.1 is 11960
 
 Answer 10.2 is EJCFPGLH
+
+Answer 11.1 is 112221
+
+Answer 11.2 is 25272176808
