@@ -33,3 +33,7 @@ Answer 8.2 is 536625
 Answer 9.1 is 6243
 
 Answer 9.2 is 2630
+
+Answer 10.1 is 11960
+
+Answer 10.2 is EJCFPGLH
