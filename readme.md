@@ -41,3 +41,7 @@ Answer 10.2 is EJCFPGLH
 Answer 11.1 is 112221
 
 Answer 11.2 is 25272176808
+
+Answer 12.1 is 462
+
+Answer 12.2 is 451

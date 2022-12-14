@@ -9,12 +9,12 @@ input.forEach((line, index) => {
     if (line[i] === "S") {
       start.y = index;
       start.x = i;
-      input[index] = input[index].replace("S", "a")
+      input[index] = input[index].replace("S", "a");
     }
     if (line[i] === "E") {
       end.y = index;
       end.x = i;
-      input[index] = input[index].replace("E", "{")
+      input[index] = input[index].replace("E", "{");
     }
   }
 });
@@ -23,86 +23,133 @@ const posToString = (posi) => `${posi.y},${posi.x}`;
 const stringToPos = (str) => ({ y: +str.split(",")[0], x: +str.split(",")[1] });
 
 const getLetter = (point) => {
-  const pos = stringToPos(point)
-  return input[pos.y][pos.x]
-}
+  const pos = stringToPos(point);
+  return input[pos.y][pos.x];
+};
 
 const isAllowed = (from, to) => {
-  if (to.includes("-")) return false
-  const posTo = stringToPos(to)
-  if (posTo.y >= input.length || posTo.x >= input[0].length) return false
-  const letterFrom = getLetter(from)
-  const letterTo = getLetter(to)
-  // if (letterTo === "S") return false
-  // if (letterFrom === "S" && letterTo !== "a") return false
-  // if (letterTo === "E" && letterFrom !== "z") return false
-  const charCodeFrom = letterFrom.charCodeAt(0)
-  const charCodeTo = letterTo.charCodeAt(0)
-  if (charCodeTo > charCodeFrom + 1) return false
-  return true
-}
+  if (to.includes("-")) return false;
+  const posTo = stringToPos(to);
+  if (posTo.y >= input.length || posTo.x >= input[0].length) return false;
+  const letterFrom = getLetter(from);
+  const letterTo = getLetter(to);
+  const charCodeFrom = letterFrom.charCodeAt(0);
+  const charCodeTo = letterTo.charCodeAt(0);
+  if (charCodeTo > charCodeFrom + 1) return false;
+  return true;
+};
 
-const distance = {};
-const previous = {};
-const unvisited = new Set();
+const getShortestDistance = (input, start, end, isAllowed, earlyExit) => {
+  const distance = {};
+  const previous = {};
+  const unvisited = new Set();
 
-input.forEach((line, y) => {
-  for (let x = 0; x < line.length; x++) {
-    const str = posToString({ y, x });
-    unvisited.add(str);
-    distance[str] = Infinity;
-  }
-});
-
-distance[posToString(start)] = 0;
-
-while (unvisited.size) {
-  const u = Array.from(unvisited).sort((a, b) => distance[a] - distance[b])[0];
-  unvisited.delete(u)
-  const currentPos = stringToPos(u);
-  const neighbor = [
-    posToString({ y: currentPos.y + 1, x: currentPos.x }),
-    posToString({ y: currentPos.y, x: currentPos.x + 1 }),
-    posToString({ y: currentPos.y - 1, x: currentPos.x }),
-    posToString({ y: currentPos.y, x: currentPos.x - 1 })
-  ];
-  const allowed = neighbor.filter(pos => {
-    return unvisited.has(pos) && isAllowed(u, pos)
-  })
-  allowed.forEach(v => {
-    const alt = distance[u] + 1
-    if (alt < distance[v]) {
-      distance[v] = alt;
-      previous[v] = u
+  input.forEach((line, y) => {
+    for (let x = 0; x < line.length; x++) {
+      const str = posToString({ y, x });
+      unvisited.add(str);
+      distance[str] = Infinity;
     }
-  })
-}
+  });
 
-const fs = require('fs')
-fs.rmSync("./data.txt")
+  distance[posToString(start)] = 0;
 
-input.forEach((line, y) => {
-  for (let x = 0; x < line.length; x++) {
-    if (distance[`${y},${x}`] === Infinity) fs.appendFileSync("./data.txt", "INF-" + input[y][x] + " ")
-    else fs.appendFileSync("./data.txt", distance[`${y},${x}`].toString().padStart(3, "0") + "-" + input[y][x] + " ")
+  while (unvisited.size) {
+    const u = Array.from(unvisited).sort(
+      (a, b) => distance[a] - distance[b]
+    )[0];
+    unvisited.delete(u);
+    const currentPos = stringToPos(u);
+    const neighbor = [
+      posToString({ y: currentPos.y + 1, x: currentPos.x }),
+      posToString({ y: currentPos.y, x: currentPos.x + 1 }),
+      posToString({ y: currentPos.y - 1, x: currentPos.x }),
+      posToString({ y: currentPos.y, x: currentPos.x - 1 }),
+    ];
+    const allowed = neighbor.filter((pos) => {
+      return unvisited.has(pos) && isAllowed(u, pos);
+    });
+    for (let i = 0; i < allowed.length; i += 1) {
+      const v = allowed[i];
+      const alt = distance[u] + 1;
+      if (alt < distance[v]) {
+        distance[v] = alt;
+        previous[v] = u;
+        if (v === posToString(end) || earlyExit?.(v))
+          return {
+            distance,
+            previous,
+            win: alt,
+          };
+      }
+    }
   }
-  fs.appendFileSync("./data.txt", "\n")
-});
-let path = ""
+  return {
+    distance,
+    previous,
+  };
+};
 
-let pr = previous[posToString(end)]
+const { distance, previous } = getShortestDistance(
+  input,
+  start,
+  end,
+  isAllowed
+);
+
+let path = [posToString(end)];
+
+let pr = previous[posToString(end)];
 while (pr) {
-  const prevPos = stringToPos(pr)
-  path = input[prevPos.y][prevPos.x] + path
-  pr = previous[pr]
+  path.unshift(pr);
+  pr = previous[pr];
 }
 
-console.log(distance[posToString(end)], path);
+const printRouteToFile = (fileName) => {
+  const fs = require("fs");
+  if (fs.existsSync(fileName)) fs.rmSync(fileName);
 
-const answer1 = 1;
+  input.forEach((line, y) => {
+    for (let x = 0; x < line.length; x++) {
+      if (path.includes(posToString({ y, x })))
+        fs.appendFileSync(fileName, ".");
+      else fs.appendFileSync(fileName, input[y][x]);
+    }
+    fs.appendFileSync(fileName, "\n");
+  });
+};
+
+printRouteToFile("./data.txt");
+
+const answer1 = distance[posToString(end)] - 2;
 
 module.exports.one = `Answer 12.1 is ${answer1}`;
 
-const answer2 = 2;
+const isAllowed2 = (from, to) => {
+  if (to.includes("-")) return false;
+  const posTo = stringToPos(to);
+  if (posTo.y >= input.length || posTo.x >= input[0].length) return false;
+  const letterFrom = getLetter(from);
+  const letterTo = getLetter(to);
+
+  const charCodeFrom = letterFrom.charCodeAt(0);
+  const charCodeTo = letterTo.charCodeAt(0);
+  if (charCodeTo + 1 === charCodeFrom || charCodeTo >= charCodeFrom) {
+    return true;
+  }
+  return false;
+};
+
+const earlyExit = (str) => {
+  const le = input[stringToPos(str).y][stringToPos(str).x];
+  if (le === "a") {
+    return true;
+  }
+  return false;
+};
+
+const { win } = getShortestDistance(input, end, start, isAllowed2, earlyExit);
+
+const answer2 = win - 2;
 
 module.exports.two = `Answer 12.2 is ${answer2}`;
