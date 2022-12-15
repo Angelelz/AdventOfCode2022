@@ -49,3 +49,7 @@ Answer 12.2 is 451
 Answer 13.1 is 5506
 
 Answer 13.2 is 21756
+
+Answer 14.1 is 655
+
+Answer 14.2 is 26484
