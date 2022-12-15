@@ -45,3 +45,7 @@ Answer 11.2 is 25272176808
 Answer 12.1 is 462
 
 Answer 12.2 is 451
+
+Answer 13.1 is 5506
+
+Answer 13.2 is 21756
