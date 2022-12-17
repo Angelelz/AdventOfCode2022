@@ -51,62 +51,55 @@ const beaconsSet = new Set(beacons.map((beacon) => pointToString(beacon)));
 const POSITION_Y = input.length === 14 ? 10 : 2000000;
 let count = 0;
 
-// for (let x = minX; x <= maxX; x += 1) {
-//   let close = 0;
-//   let index = 0;
-//   while (close === 0 && index < sensors.length) {
-//     const currentPos = { y: POSITION_Y, x };
-//     if (
-//       calculateLength(sensors[index], currentPos) <= distances[index] &&
-//       !beaconsSet.has(pointToString(currentPos))
-//     ) {
-//       close += 1;
-//     }
-//     index += 1;
-//   }
+for (let x = minX; x <= maxX; x += 1) {
+  let close = 0;
+  let index = 0;
+  while (close === 0 && index < sensors.length) {
+    const currentPos = { y: POSITION_Y, x };
+    if (
+      calculateLength(sensors[index], currentPos) <= distances[index] &&
+      !beaconsSet.has(pointToString(currentPos))
+    ) {
+      close += 1;
+    }
+    index += 1;
+  }
 
-//   if (close > 0) count += 1;
-// }
-
-console.log(count);
+  if (close > 0) count += 1;
+}
 
 const answer1 = count;
 
 module.exports.one = `Answer 15.1 is ${answer1}`;
 
-const maximum = input.length === 14 ? 20 : 4000000
-const minimum = 0
+const maximum = input.length === 14 ? 20 : 4000000;
+const minimum = 0;
+const border = new Set();
 
-// let distressLocation = null
-
-// for (let x = minimum; x <= maximum; x +=1) {
-//   for (let y = minimum; y <= maximum; y +=1) {
-//     const isBlank = sensors.every((sensor, index) => {
-//       return calculateLength(sensor, { y, x }) > distances[index]
-//     })
-//     if (isBlank) {
-//       distressLocation = {y,x}
-//       break
-//     }
-//   }
-//   if (distressLocation !== null) break
-//   console.log(x)
-// }
-
-const possibleLocations = new Set()
-
-for (let x = minimum; x <= maximum; x +=1) {
-  for (let y = minimum; y <= maximum; y +=1) {
-    try {
-      possibleLocations.add(`${x},${y}`)
-    } catch (error) {
-      console.log(possibleLocations.size)      
+sensors.forEach((sensor, index) => {
+  const distance = distances[index] + 1;
+  const currentMinX = Math.max(minimum, sensor.x - distance);
+  const currentMaxX = Math.min(maximum, sensor.x + distance);
+  for (let x = currentMinX; x <= currentMaxX; x += 1) {
+    let y = Math.max(sensor.y - (distance - Math.abs(sensor.x - x)), minimum);
+    if (calculateLength(sensor, { x, y }) === distance) {
+      const insert = sensors.some((s, i) => {
+        return calculateLength(s, { x, y }) <= distances[i];
+      });
+      if (!insert) border.add(pointToString({ x, y }));
+    }
+    y = Math.min(sensor.y + (distance - Math.abs(sensor.x - x)), maximum);
+    if (calculateLength(sensor, { x, y }) === distance) {
+      const insert = sensors.some((s, i) => {
+        return calculateLength(s, { x, y }) <= distances[i];
+      });
+      if (!insert) border.add(pointToString({ x, y }));
     }
   }
-}
-console.log("done")
-// const answer2 = distressLocation.x * 4000000 + distressLocation.y;
+});
 
-console.log(answer2)
+const distressLocation = stringToPoint(border.values().next().value);
+
+const answer2 = distressLocation.x * 4000000 + distressLocation.y;
 
 module.exports.two = `Answer 15.2 is ${answer2}`;
